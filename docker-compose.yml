@@ -1,0 +1,86 @@
+version: "3.7"
+services:
+  docker-mysql:
+    container_name:  'mysql'
+    image: mysql:latest
+    logging:
+      driver: none
+    environment:
+       MYSQL_ROOT_PASSWORD: password
+       MYSQL_DATABASE: song
+       MYSQL_PASSWORD: password
+    ports:
+      - 3307:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+  mongo_db:
+    image: 'mongo'
+    logging:
+      driver: none
+    ports:
+      - 27017:27017
+    container_name: mongo
+    environment:
+      MONGO_INITDB_DATABASE: resource
+    volumes:
+        - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  activemq:
+    container_name: 'activemq'
+    image: rmohr/activemq:latest
+    logging:
+      driver: none
+    restart: always
+
+    ports:
+      - 8161:8161
+      - 61616:61616
+      - 5672:5672
+      - 61613:61613
+      - 1883:1883
+      - 61614:61614
+    environment:
+      - ACTIVEMQ_ADMIN_LOGIN=admin
+      - ACTIVEMQ_ADMIN_PASSWORD=admin
+      - ACTIVEMQ_CONFIG_MINMEMORY=512
+      - ACTIVEMQ_CONFIG_MAXMEMORY=2048
+      - TZ=Asia/Shanghai
+
+  app:
+    build: .
+    restart: always
+    ports:
+      - 8098:8080
+    logging:
+      driver: none
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/song?autoReconnect=true&useSSL=false
+    links:
+      - mongo_db
+      - docker-mysql
+      - activemq
+    depends_on:
+      - mongo_db
+      - docker-mysql
+      - activemq
+
+  app-song:
+    image: song-creator:1.0
+    container_name: 'song-creator'
+    restart: always
+    ports:
+      - 8093:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/song?autoReconnect=true&useSSL=false
+    links:
+      - mongo_db
+      - docker-mysql
+      - activemq
+    depends_on:
+      - mongo_db
+      - docker-mysql
+      - activemq
+volumes:
+  dbdata:
+
+
+
