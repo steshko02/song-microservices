@@ -46,6 +46,7 @@ public class FileUploadController {
         return ResponseEntity
                 .ok()
                 .contentLength(res.contentLength())
+                .contentLength(res.contentLength())
                 .header("Content-type", "application/octet-stream")
                 .header("Content-disposition", "attachment; filename=\"" + resourceObj.getFileName() + "\"")
                 .body(res);

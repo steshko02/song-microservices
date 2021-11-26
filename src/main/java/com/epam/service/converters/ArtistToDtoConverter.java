@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class ArtistToDtoConverter
         implements Converter<Artist, ArtistDto> {
 
-
     @Override
     public ArtistDto convert(Artist entity) {
         ArtistDto dto = new ArtistDto();

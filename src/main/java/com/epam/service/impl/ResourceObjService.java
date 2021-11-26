@@ -1,6 +1,6 @@
 package com.epam.service.impl;
 
-import com.epam.jms.Producer;
+import com.epam.jms.ResourceMessageProducer;
 import com.epam.model.resource.ResourceObj;
 import com.epam.model.storages.Storage;
 import com.epam.model.entity.StorageType;
@@ -28,7 +28,7 @@ public class ResourceObjService implements ResourceObjectService {
     @Autowired
     private StorageRepository storageRepository;
     @Autowired
-    private Producer producer;
+    private ResourceMessageProducer producer;
 
     public void store(InputStream inputStream, StorageType storageType, String ex) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         Storage storage = storageRepository.getStorage(storageType);

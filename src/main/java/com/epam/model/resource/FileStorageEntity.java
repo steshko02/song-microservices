@@ -45,18 +45,28 @@ public class FileStorageEntity implements ResourceObj {
             throw new IOException("Exception occurred while decompressing input stream. ", e);
         }
     }
+
+    public void retryResponse(IOException e) throws Exception {
+        throw  e;
+    }
+
     @Override
-    public void save(InputStream inputStream)  {
+    public void save(InputStream inputStream) throws IOException {
         this.file = new File(this.path);
             try ( InputStream inputStreamToUse = inputStream;
                     OutputStream outputStream = new FileOutputStream(this.file)) {
                 IOUtils.copy(inputStreamToUse, outputStream);
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                throw new FileNotFoundException("file not found");
             } catch (IOException e) {
-                e.printStackTrace();
+                throw  new IOException("failed write OutputStream");
             }
     }
+
+//    @Override
+//    public void getSaveResponseFallback(IOException e) throws IOException {
+//
+//    }
 
     private Path createFilepath(String path){
         UUID uuid = UUID.randomUUID();
@@ -104,4 +114,11 @@ public class FileStorageEntity implements ResourceObj {
     public String getFileName() {
         return Paths.get(this.path).getFileName().toString();
     }
+
+
+    @Override
+    public void save(ContentConsumer contentConsumer) throws IOException {
+
+    }
+
 }

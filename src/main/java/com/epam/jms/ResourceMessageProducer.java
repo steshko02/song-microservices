@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class Producer {
+public class ResourceMessageProducer {
 
     @Autowired
     @Qualifier("jms")

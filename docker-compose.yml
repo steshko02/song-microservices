@@ -30,7 +30,6 @@ services:
     logging:
       driver: none
     restart: always
-
     ports:
       - 8161:8161
       - 61616:61616
@@ -44,7 +43,6 @@ services:
       - ACTIVEMQ_CONFIG_MINMEMORY=512
       - ACTIVEMQ_CONFIG_MAXMEMORY=2048
       - TZ=Asia/Shanghai
-
   app:
     build: .
     restart: always
@@ -58,13 +56,14 @@ services:
       - mongo_db
       - docker-mysql
       - activemq
+      - eureka-server
     depends_on:
       - mongo_db
       - docker-mysql
       - activemq
-
+      - eureka-server
   app-song:
-    image: song-creator:1.0
+    image: song-parser:1.0
     container_name: 'song-creator'
     restart: always
     ports:
@@ -75,11 +74,56 @@ services:
       - mongo_db
       - docker-mysql
       - activemq
+      - eureka-server
     depends_on:
       - mongo_db
       - docker-mysql
       - activemq
+      - eureka-server
+
+  es01:
+   image: elasticsearch:7.6.2
+   container_name: 'esSearch'
+   restart: on-failure
+   environment:
+     - discovery.type=single-node
+     - bootstrap.memory_lock=true
+     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+   volumes:
+      - data01:/usr/share/elasticsearch/data
+   ports:
+     - "9200:9200"
+     - "9300:9300"
+  ESService:
+    image: elastic-indexer:1.0
+    container_name: 'elastic-indexer'
+    restart: always
+    ports:
+      - 8090:8080
+    links:
+      - es01
+      - activemq
+      - eureka-server
+    depends_on:
+        - es01
+        - activemq
+        - eureka-server
+  eureka-server:
+    image: discovery-server:1.0
+    hostname: eureka-server
+    ports:
+     - "8761:8761"
+  gateway-server:
+    image: gateway-api:1.0
+    ports:
+      - "8888:8080"
+    links:
+      - eureka-server
+    depends_on:
+     - eureka-server
 volumes:
+  data01:
+    driver: local
   dbdata:
 
 

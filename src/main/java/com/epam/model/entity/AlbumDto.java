@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Data
 public class AlbumDto {
+
     private Long id;
 
     private  String name;

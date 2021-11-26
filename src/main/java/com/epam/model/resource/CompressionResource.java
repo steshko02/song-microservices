@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 
 @Document
 @TypeAlias("CompressRes")
@@ -28,20 +29,23 @@ public class CompressionResource implements ResourceObj {
     @SneakyThrows
     @Override
     public void save(InputStream is) throws IOException {
-        try (   InputStream isToUse = is;
+        try ( InputStream isToUse = is;
                 InputStream compressedIs = compressionOperation.compressInputStream(isToUse)) {
             delegate.save(compressedIs);
         }
     }
 
+
+
     @Override
-    public InputStream read() throws IOException {
-        try {
+    public InputStream read() throws UncheckedIOException, IOException {
             return compressionOperation.decompressInputStream(delegate.read());
-        } catch (IOException e) {
-           throw new IOException("failed read InputStream");
-        }
     }
+
+//    public void retryResponse(IOException e) throws Exception {
+//        System.out.println("retry!");
+//        delegate.retryResponse(e);
+//    }
 
     @Override
     public void setStorageId(String storageId) {
@@ -81,5 +85,11 @@ public class CompressionResource implements ResourceObj {
     @Override
     public String getFileName() {
         return delegate.getFileName();
+    }
+
+
+    @Override
+    public void save(ContentConsumer contentConsumer) throws IOException {
+        delegate.save(contentConsumer);
     }
 }

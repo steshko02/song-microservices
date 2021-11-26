@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DtoToArtistConverter
         implements Converter<ArtistDto, Artist> {
+
     @Autowired
     private GenreRepository genreRepository;
 
