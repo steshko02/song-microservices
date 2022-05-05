@@ -48,8 +48,8 @@ services:
     restart: always
     ports:
       - 8098:8080
-    logging:
-      driver: none
+#    logging:
+#      driver: none
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/song?autoReconnect=true&useSSL=false
     links:
@@ -57,74 +57,92 @@ services:
       - docker-mysql
       - activemq
       - eureka-server
+      - cache
     depends_on:
       - mongo_db
       - docker-mysql
       - activemq
       - eureka-server
-  app-song:
-    image: song-parser:1.0
-    container_name: 'song-creator'
-    restart: always
-    ports:
-      - 8093:8080
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/song?autoReconnect=true&useSSL=false
-    links:
-      - mongo_db
-      - docker-mysql
-      - activemq
-      - eureka-server
-    depends_on:
-      - mongo_db
-      - docker-mysql
-      - activemq
-      - eureka-server
-
-  es01:
-   image: elasticsearch:7.6.2
-   container_name: 'esSearch'
-   restart: on-failure
-   environment:
-     - discovery.type=single-node
-     - bootstrap.memory_lock=true
-     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-   volumes:
-      - data01:/usr/share/elasticsearch/data
-   ports:
-     - "9200:9200"
-     - "9300:9300"
-  ESService:
-    image: elastic-indexer:1.0
-    container_name: 'elastic-indexer'
-    restart: always
-    ports:
-      - 8090:8080
-    links:
-      - es01
-      - activemq
-      - eureka-server
-    depends_on:
-        - es01
-        - activemq
-        - eureka-server
+      - cache
+#  app-song:
+#    image: song-app:1.0
+#    container_name: 'song-creator'
+#    restart: always
+#    ports:
+#      - 8093:8080
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://docker-mysql:3306/song?autoReconnect=true&useSSL=false
+#    links:
+#      - mongo_db
+#      - docker-mysql
+#      - activemq
+#      - eureka-server
+#    depends_on:
+#      - mongo_db
+#      - docker-mysql
+#      - activemq
+#      - eureka-server
+#  es01:
+#   image: :7.6.2
+#   container_name: 'esSearch'
+#   restart: on-failure
+#   environment:
+#     - discovery.type=single-node
+#     - bootstrap.memory_lock=true
+#     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#   volumes:elasticsearch
+#      - data01:/usr/share/elasticsearch/data
+#   ports:
+#     - "9200:9200"
+#     - "9300:9300"
+#  ESService:
+#    image: elastic-indexer:1.0
+#    container_name: 'elastic-indexer'
+#    restart: always
+#    ports:
+#      - 8090:8080
+#    links:
+#      - es01
+#      - activemq
+#      - eureka-server
+#    depends_on:
+#        - es01
+#        - activemq
+#        - eureka-server
+#  admin-app:
+#    image: admin-app:1.0
+#    restart: always
+#    ports:
+#      - 8084:8080
+#    links:
+#      - gateway-server
+#      - eureka-server
+#    depends_on:
+#      - gateway-server
+#      - eureka-server
+#  gateway-server:
+#    image: gateway-api:1.0
+#    ports:
+#      - 8085:8080
+#    links:
+#      - app-song
+#      - eureka-server
+#    depends_on:
+#      - app-song
+#      - eureka-server
   eureka-server:
     image: discovery-server:1.0
     hostname: eureka-server
     ports:
      - "8761:8761"
-  gateway-server:
-    image: gateway-api:1.0
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    hostname: cache
     ports:
-      - "8888:8080"
-    links:
-      - eureka-server
-    depends_on:
-     - eureka-server
+      - "6379:6379"
 volumes:
   data01:
     driver: local
   dbdata:
-
-
 

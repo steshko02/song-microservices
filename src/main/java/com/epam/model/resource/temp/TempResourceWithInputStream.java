@@ -14,7 +14,8 @@ public class TempResourceWithInputStream extends FilterInputStream {
     }
     @Override
     public  int read() throws IOException {
-        return tempResource.getInputStream().read();
+        int a = super.read();
+        return a;
     }
 
     public InputStream readInputStream(){

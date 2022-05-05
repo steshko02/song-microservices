@@ -33,14 +33,12 @@ public class FileUploadController {
         if(storageType == null)
             storageType = StorageType.DISK_FILE_SYSTEM;
         model.addAttribute("storage", storageType);
-        model.addAttribute("files", resourceObjService.loadAll(storageType));
         return "uploadForm";
     }
 
-    @GetMapping("/{resId}")
+    @GetMapping("/download/{resId}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String resId,
-                                              @RequestParam("st") StorageType storageType) throws IOException {
+    public ResponseEntity<Resource> serveFile(@PathVariable String resId) throws IOException {
         ResourceObj resourceObj =resourceObjService.getResource(resId);
         Resource res = new ByteArrayResource(resourceObj.read().readAllBytes());
         return ResponseEntity
@@ -53,15 +51,13 @@ public class FileUploadController {
     }
 
      @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   @RequestParam("st") StorageType storageType,
-                                   RedirectAttributes redirectAttributes) throws Exception {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file) throws Exception {
 
-         resourceObjService.store(file.getInputStream(),storageType,file.getOriginalFilename());
+        resourceObjService.store(file.getInputStream(),StorageType.CLOUD_SYSTEM,file.getOriginalFilename());
 
-        redirectAttributes.addFlashAttribute("message",
-                "You successfully uploaded " + file.getOriginalFilename() + "!");
-        return "redirect:/?st="+storageType.toString();
+//        return "uploadForm";
+
+        return "redirect:localhost:8085/upload-app/";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

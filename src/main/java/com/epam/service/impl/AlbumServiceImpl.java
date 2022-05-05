@@ -7,12 +7,17 @@ import com.epam.repository.mysql.AlbumRepository;
 import com.epam.repository.mysql.ArtistRepository;
 import com.epam.repository.mysql.GenreRepository;
 import com.epam.service.interfaces.AlbumService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
+@Slf4j
 public class AlbumServiceImpl implements AlbumService {
 
     @Autowired
@@ -20,10 +25,6 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Autowired
     private GenreRepository genreRepository;
-
-    @Autowired
-    private ArtistRepository artistRepository;
-
 
     @Override
     public Long add(Album album) {
@@ -56,6 +57,7 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public Album get(Long id) {
+        log.info("Get by id - "+id);
         Album album = albumRepository.findById(id).orElse(null);
         if(album == null){
             throw new EntityNotFoundException(Album.class, "id", id.toString());
@@ -64,16 +66,13 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Long[] delete(Long... ids) {
-        for (Long id: ids) {
+    public Long delete(Long id) {
             albumRepository.deleteById(id);
-        }
-        return ids;
+        return id;
     }
 
     @Override
     public Album findByName(String name) {
-
         Album album = albumRepository.findByName(name);
         if(album == null){
             throw new EntityNotFoundException(Album.class, "name", name);

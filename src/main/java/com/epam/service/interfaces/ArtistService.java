@@ -9,6 +9,8 @@ public interface ArtistService {
     Long add(Artist artist);
     Long edit(Artist artist,Long id);
     Artist get(Long id);
-    Long[] delete(Long ...id);
+
+    Long delete(Long id);
+
     List<Artist> getByFilters(String name, Long[] ids);
 }

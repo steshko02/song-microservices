@@ -60,11 +60,9 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Long[] delete(Long... ids) {
-        for (Long id: ids) {
+    public Long delete(Long id) {
             artistRepository.deleteById(id);
-        }
-        return ids;
+        return id;
     }
 
     public List<Artist> getByFilters(String name, Long[] ids){

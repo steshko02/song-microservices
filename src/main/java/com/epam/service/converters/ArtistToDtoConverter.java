@@ -1,7 +1,7 @@
 package com.epam.service.converters;
 
 import com.epam.model.entity.Artist;
-import com.epam.model.entity.ArtistDto;
+import com.epam.model.entity.dto.ArtistDto;
 import com.epam.model.entity.Genre;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.epam.service.converters;
 
 
 import com.epam.model.entity.Artist;
-import com.epam.model.entity.ArtistDto;
+import com.epam.model.entity.dto.ArtistDto;
 import com.epam.repository.mysql.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;

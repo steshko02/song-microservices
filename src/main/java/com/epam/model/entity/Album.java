@@ -1,9 +1,13 @@
 package com.epam.model.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -12,7 +16,10 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name="albums")
-public class Album {
+@EqualsAndHashCode
+//@Cacheable
+//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Album implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,11 +31,13 @@ public class Album {
 
     private  String notes;
 
+//    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany
     @JoinTable(name="arist_album", joinColumns=@JoinColumn(name="album_id"),
             inverseJoinColumns=@JoinColumn(name="artist_id"))
     private Set<Artist> artists = new HashSet<>();
 
+//    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @ManyToMany
     @JoinTable(name="genre_album", joinColumns=@JoinColumn(name="album_id"),
             inverseJoinColumns=@JoinColumn(name="genre_id"))

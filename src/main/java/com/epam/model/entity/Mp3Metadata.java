@@ -21,6 +21,5 @@ public class Mp3Metadata implements Serializable {
     }
 
     public Mp3Metadata() {
-
     }
 }

@@ -28,7 +28,7 @@ public class ThresholdBasedTempResourceFactory implements TempResourceFactory {
     public   static  ThresholdBasedTempResourceFactory defaults(){
         return new ThresholdBasedTempResourceFactory(new ByteArrayTempResourceFactory(),
                 new FileTempFactory(),
-                (long) (32768 * 16));
+                (long) (32768 * 16 * 20));
     }
 
     public  ThresholdBasedTempResourceFactory useThreshold(Long threshold){

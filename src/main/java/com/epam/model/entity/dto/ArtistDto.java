@@ -1,20 +1,24 @@
-package com.epam.model.entity;
+package com.epam.model.entity.dto;
 
 import lombok.Data;
 
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Data
-public class ArtistDto {
+public class ArtistDto implements Serializable {
+
+    @Id
     private Long id;
 
     private  String name;
 
     private  String notes;
 
-    Set<Long> genres = new HashSet<>();
+    private Set<Long> genres = new HashSet<>();
 
     public ArtistDto() {
     }

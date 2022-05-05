@@ -40,6 +40,12 @@ public class CompressionResource implements ResourceObj {
     @Override
     public InputStream read() throws UncheckedIOException, IOException {
             return compressionOperation.decompressInputStream(delegate.read());
+//            return delegate.read();
+    }
+
+    @Override
+    public InputStream readWithOffset(Long offset, Long length) {
+       return delegate.readWithOffset(offset,length);
     }
 
 //    public void retryResponse(IOException e) throws Exception {

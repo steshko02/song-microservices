@@ -18,6 +18,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Primary
@@ -32,7 +33,8 @@ public class ResourceObjService implements ResourceObjectService {
 
     public void store(InputStream inputStream, StorageType storageType, String ex) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         Storage storage = storageRepository.getStorage(storageType);
-        ResourceObj resource = storage.requestBuilder().withCompression().build();
+//        ResourceObj resource = storage.requestBuilder().withCompression().build();
+        ResourceObj resource = storage.requestBuilder().build();
         resourceObjRepository.saveResource(resource);
         resource.save(inputStream);
         producer.sendMessage(resource.getId());
@@ -40,10 +42,8 @@ public class ResourceObjService implements ResourceObjectService {
 
     public  List<String> loadAll(StorageType storageType) throws IOException {
         Storage storage = storageRepository.getStorage(storageType);
-        List<ResourceObj> resources = resourceObjRepository.getByStorageId(storage.getId());
-        List<String> filenames = new ArrayList<>();
-        resources.stream().forEach(x->filenames.add(x.getFileName()));
-       return filenames;
+       return resourceObjRepository.getByStorageId(storage.getId()).stream().
+               map(resourceObj -> resourceObj.getFileName()).collect(Collectors.toList());
     }
 
     @Override

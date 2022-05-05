@@ -1,53 +1,68 @@
 package com.epam.controllers;
 
 
-import com.epam.jms.ResourceMessageProducer;
-import com.epam.model.entity.StorageType;
-import com.epam.model.storages.FSStorage;
-import com.epam.model.storages.Storage;
-import com.epam.repository.mongo.ResourceObjRepository;
-import com.epam.repository.mongo.StorageRepository;
-import com.epam.service.impl.ResourceObjService;
+import com.epam.model.entity.Album;
+import com.epam.range.AudioStreaming;
+import com.epam.repository.mysql.AlbumRepository;
+import com.epam.service.interfaces.AlbumService;
+import com.epam.service.interfaces.SongService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashSet;
 
-
-@RestController
+@Controller
 public class testController {
 
     @Autowired
-    private ResourceObjService resourceObjService;
-
+    private SongService songService;
     @Autowired
-    private ResourceObjRepository resourceObjRepository;
-
+    private AudioStreaming streaming;
     @Autowired
-    private StorageRepository storageRepository;
-    @Autowired
-    private ResourceMessageProducer producer;
+    private AlbumService albumService;
 
     @SneakyThrows
     @GetMapping("/test4")
-    public String  testSong1() throws IOException {
-        Storage storage = new FSStorage("213123123131dsfsdf3","[dsfdfs",StorageType.DISK_FILE_SYSTEM);
-
-        storageRepository.saveStorage(storage);
-
+    public String testSong1() throws IOException {
         return "audio";
     }
 
-//    @Autowired
-//    private  testSer test;
-
-    @GetMapping("/test")
-    public String  test() {
-        testSer test = new testSer();
-        test.retry();
-        return  "sfsdf";
+    @SneakyThrows
+    @GetMapping("/test5/{id}")
+    @ResponseBody
+//    @Cacheable(value = "albums", key = "#id")
+    public Album testSong2(@PathVariable("id") Long id) throws IOException {
+        Album album1 = new Album();
+        album1.setArtists(new HashSet<>());
+        album1.setGenres(new HashSet<>());
+        album1.setName("dfsf");
+        album1.setNotes("fdsfsdfsdfsdf");
+        album1.setYear(2000);
+//        albumService.add(album1);
+        System.out.println("1111111111111111111111111");
+        albumService.get(35L);
+        System.out.println("22222222222222222222222222");
+        albumService.get(40L);
+        System.out.println("2222222222222222222wwww2222222");
+        albumService.get(40L);
+        System.out.println("333333333333333333333333333");
+        albumService.get(101L);
+        return  album1;
     }
+
+    @GetMapping("/stream")
+    public ResponseEntity<byte[]> streamVideo(HttpServletResponse serverHttpResponse, @RequestHeader(value = "Range", required = false) String httpRangeList) throws IOException {
+        return streaming.prepareContent(82L, "mp3", httpRangeList);
+    }
+
 }

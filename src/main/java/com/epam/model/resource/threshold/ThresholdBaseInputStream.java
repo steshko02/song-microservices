@@ -1,5 +1,7 @@
 package com.epam.model.resource.threshold;
 
+import com.epam.model.resource.temp.TempResourceWithInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,10 +22,10 @@ public class ThresholdBaseInputStream  extends InputStream {
 
     @Override
     public int read() throws IOException {
-        if(++counter>threshold || threshold ==0){
+        if(++counter>threshold || threshold ==0 ) {
             thresholdReached = true;
             return  -1;
-        }else {
+        } else {
             return delegate.read();
         }
     }

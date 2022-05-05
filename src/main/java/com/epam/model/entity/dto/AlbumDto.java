@@ -1,14 +1,16 @@
-package com.epam.model.entity;
+package com.epam.model.entity.dto;
 
 import lombok.Data;
 
+import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Data
-public class AlbumDto {
-
+public class AlbumDto implements Serializable {
+    @Id
     private Long id;
 
     private  String name;

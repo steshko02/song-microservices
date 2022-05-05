@@ -1,12 +1,11 @@
 package com.epam.controllers;
 
 import com.epam.annotations.RetryOnFailure;
-import org.springframework.retry.annotation.Retryable;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
-@Retryable
+
 public class testSer {
 
     @RetryOnFailure(retryAttempts = 2,sleepInterval = 2000L)

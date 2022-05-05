@@ -62,7 +62,6 @@ public class CloudStorageEntity implements ResourceObj {
         createFileName();
     }
 
-    @RetryOnFailure(retryAttempts = 2,sleepInterval = 2000L)
     private MinioClient buildClient() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
          try {
              MinioClient minioClient =
@@ -83,7 +82,6 @@ public class CloudStorageEntity implements ResourceObj {
 
     @SneakyThrows
     @Override
-    @RetryOnFailure(retryAttempts = 2,sleepInterval = 2000L)
     public InputStream read()  throws UncheckedIOException{
         try {
             if (minioClient == null) this.minioClient = buildClient();
@@ -93,6 +91,23 @@ public class CloudStorageEntity implements ResourceObj {
                     .build();
             return minioClient.getObject(getObjectArgs);
         }catch (IOException e){
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    @SneakyThrows
+    @Override
+    public InputStream readWithOffset(Long offset,Long length) {
+        try {
+            if (minioClient == null) this.minioClient = buildClient();
+            GetObjectArgs getObjectArgs = GetObjectArgs.builder()
+                        .bucket(this.bucket)
+                        .object(this.name)
+                        .offset(offset)
+                        .length(length)
+                        .build();
+            return minioClient.getObject(getObjectArgs);
+        } catch (IOException e){
             throw new UncheckedIOException(e);
         }
     }
@@ -109,8 +124,6 @@ public class CloudStorageEntity implements ResourceObj {
             }
         }
     }
-
-    @RetryOnFailure(retryAttempts = 2,sleepInterval = 2000L)
     private void saveStreamWithSize(InputStream stream,Long size) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         this.minioClient = buildClient();
         minioClient.putObject(

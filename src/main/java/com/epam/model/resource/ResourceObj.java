@@ -12,14 +12,10 @@ import java.security.NoSuchAlgorithmException;
 
 
 public interface ResourceObj {
-//
-////
-//    @Retryable(value = {UnknownHostException.class},maxAttemptsExpression = "3",
-//            backoff = @Backoff(delayExpression = "400"))
+
     InputStream read() throws UncheckedIOException, IOException;
 
-//    @Recover
-//    void retryResponse(IOException e) throws Exception;
+    InputStream readWithOffset(Long offset, Long length);
 
     void save(InputStream stream) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException;
 

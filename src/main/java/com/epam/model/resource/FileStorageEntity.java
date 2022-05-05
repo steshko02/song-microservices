@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Document
 @TypeAlias("FSResource")
+@Deprecated
 public class FileStorageEntity implements ResourceObj {
     @Transient
     private File file;
@@ -44,6 +45,11 @@ public class FileStorageEntity implements ResourceObj {
         } catch (IOException e) {
             throw new IOException("Exception occurred while decompressing input stream. ", e);
         }
+    }
+
+    @Override
+    public InputStream readWithOffset(Long offset, Long length) {
+        return null;
     }
 
     public void retryResponse(IOException e) throws Exception {

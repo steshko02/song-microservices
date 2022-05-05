@@ -12,7 +12,6 @@ public interface ArtistRepository extends JpaRepository<Artist,Long> {
 
     Set<Artist> findByNameStartingWith(String name);
 
-
     @Query("select a from Artist a join a.genres g where g.id in :ids and LOWER(a.name)  like LOWER(concat(:name,'%'))")
     List<Artist> getFilters(@Param("ids") Iterable<Long> ids,@Param("name") String name);
 

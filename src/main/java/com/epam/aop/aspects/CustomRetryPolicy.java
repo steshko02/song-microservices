@@ -9,8 +9,6 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import java.io.IOException;
 import java.util.List;
 
-//крч, нужно сделать возможно бэк офф полиси, для экспонентиальной политики
-
 public class CustomRetryPolicy extends ExceptionClassifierRetryPolicy {
 
     private List< Class<? extends Throwable>> ignoreExceptions;

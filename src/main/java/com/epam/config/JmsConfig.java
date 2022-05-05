@@ -11,18 +11,7 @@ import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.Queue;
 
-//@Configuration
-//@EnableJms
-//public class JmsConfig {
-//    @Bean
-//    public JmsListenerContainerFactory<?> myFactory(
-//            ConnectionFactory connectionFactory,
-//            DefaultJmsListenerContainerFactoryConfigurer configurer) {
-//        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-//        configurer.configure(factory, connectionFactory);
-//        return factory;
-//    }
-//}
+
 @Configuration
 @EnableJms
 public class JmsConfig {
